@@ -1,4 +1,3 @@
-
 export function handleSuccess(data) {
     return data
       .map(
@@ -40,4 +39,3 @@ export function handleSuccess(data) {
       )
       .join('');
   }
-  

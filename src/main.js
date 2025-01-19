@@ -1,54 +1,44 @@
-const refs = {
+import iziToast from 'izitoast';
+import 'izitoast/dist/css/iziToast.min.css';
+import { fetchImages } from './js/pixabay-api.js';
+
+export const refs = {
   form: document.querySelector('.form'),
   gallery: document.querySelector('.gallery'),
   loader: document.querySelector('.loader'),
 };
 
-refs.form.addEventListener('submit', onFormSubmit);
+refs.form.addEventListener('submit', handleSubmit);
 
-function onFormSubmit(event) {
+function handleSubmit(event) {
   event.preventDefault();
-  const { elements } = event.currentTarget;
-  const searchQuery = elements.state.value.trim();
+  const form = event.currentTarget;
+  const inputValue = form.elements.state.value.trim();
 
   refs.gallery.innerHTML = '';
 
-  if (!searchQuery) {
-    showErrorMessage('Please enter a search term');
+  if (!inputValue) {
+    iziToast.error({
+      message: 'Please enter your request',
+      position: 'topRight',
+    });
     return;
   }
 
-  toggleLoaderVisibility(true);
+  refs.loader.classList.remove('is-hidden');
 
-  getImages(searchQuery)
+  fetchImages(inputValue)
     .catch(error => {
-      toggleLoaderVisibility(false);
-      showErrorMessage('Unable to fetch images. Try again later.');
+      refs.loader.style.display = 'none';
+      iziToast.error({
+        message: 'Error fetching images. Please try again later.',
+        position: 'topRight',
+      });
       console.error(error);
     })
     .finally(() => {
-      toggleLoaderVisibility(false);
+      refs.loader.classList.add('is-hidden');
     });
 
   refs.form.reset();
-}
-
-function showErrorMessage(message) {
-  iziToast.error({
-    message: message,
-    position: 'topRight',
-  });
-}
-
-function toggleLoaderVisibility(isVisible) {
-  if (isVisible) {
-    refs.loader.classList.remove('is-hidden');
-  } else {
-    refs.loader.classList.add('is-hidden');
-  }
-}
-
-function getImages(query) {
-  // This function would handle the fetching of images from an API
-  // Replace this with actual logic for fetching images
 }
