@@ -25,11 +25,10 @@ function handleSubmit(event) {
     return;
   }
 
-  refs.loader.classList.remove('is-hidden');
+  toggleLoader(true);
 
-  fetchImages(inputValue)
+  fetchImages(inputValue, refs.gallery)
     .catch(error => {
-      refs.loader.style.display = 'none';
       iziToast.error({
         message: 'Error fetching images. Please try again later.',
         position: 'topRight',
@@ -37,8 +36,12 @@ function handleSubmit(event) {
       console.error(error);
     })
     .finally(() => {
-      refs.loader.classList.add('is-hidden');
+      toggleLoader(false);
     });
 
   refs.form.reset();
+}
+
+function toggleLoader(isVisible) {
+  refs.loader.classList.toggle('is-hidden', !isVisible);
 }
