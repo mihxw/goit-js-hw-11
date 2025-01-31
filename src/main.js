@@ -5,7 +5,6 @@ import { fetchImages } from './js/pixabay-api.js';
 export const refs = {
   form: document.querySelector('.form'),
   gallery: document.querySelector('.gallery'),
-  loader: document.querySelector('.loader'),
   searchButton: document.querySelector('.button'),  // Кнопка для пошуку
 };
 
@@ -27,27 +26,19 @@ function handleSearch(event) {
     return;
   }
 
-  // Показуємо лоадер
-  refs.loader.classList.remove('is-hidden');
-
   // Виконуємо запит на пошук
   fetchImages(inputValue)
     .then(data => {
       // Якщо запит успішний, можна додати елементи в галерею
-      // В даному випадку ми це пропускаємо, бо ви не надали код для додавання зображень
+      // Пропускаємо це для прикладу
     })
     .catch(error => {
-      // Якщо виникла помилка, ховаємо лоадер та виводимо повідомлення
-      refs.loader.classList.add('is-hidden');
+      // Якщо виникла помилка, виводимо повідомлення
       iziToast.error({
         message: 'Error fetching images. Please try again later.',
         position: 'topRight',
       });
       console.error(error);
-    })
-    .finally(() => {
-      // Оскільки це фінальний етап, ми все одно ховаємо лоадер, навіть якщо все пройшло успішно
-      refs.loader.classList.add('is-hidden');
     });
 
   refs.form.reset();  // Очищаємо форму після пошуку
