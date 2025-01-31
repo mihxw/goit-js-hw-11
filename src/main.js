@@ -6,17 +6,19 @@ export const refs = {
   form: document.querySelector('.form'),
   gallery: document.querySelector('.gallery'),
   loader: document.querySelector('.loader'),
+  searchButton: document.querySelector('.button'),  // Кнопка для пошуку
 };
 
-refs.form.addEventListener('submit', handleSubmit);
+refs.searchButton.addEventListener('click', handleSearch);  // Слухаємо натискання на кнопку
 
-function handleSubmit(event) {
-  event.preventDefault();
-  const form = event.currentTarget;
-  const inputValue = form.elements.state.value.trim();
+function handleSearch(event) {
+  event.preventDefault();  // Запобігаємо стандартній поведінці кнопки
 
-  refs.gallery.innerHTML = '';
+  const inputValue = refs.form.elements.state.value.trim();
 
+  refs.gallery.innerHTML = '';  // Очищаємо галерею перед пошуком
+
+  // Перевірка, чи введено значення
   if (!inputValue) {
     iziToast.error({
       message: 'Please enter your request',
@@ -25,10 +27,18 @@ function handleSubmit(event) {
     return;
   }
 
-  toggleLoader(true);
+  // Показуємо лоадер
+  refs.loader.classList.remove('is-hidden');
 
-  fetchImages(inputValue, refs.gallery)
+  // Виконуємо запит на пошук
+  fetchImages(inputValue)
+    .then(data => {
+      // Якщо запит успішний, можна додати елементи в галерею
+      // В даному випадку ми це пропускаємо, бо ви не надали код для додавання зображень
+    })
     .catch(error => {
+      // Якщо виникла помилка, ховаємо лоадер та виводимо повідомлення
+      refs.loader.classList.add('is-hidden');
       iziToast.error({
         message: 'Error fetching images. Please try again later.',
         position: 'topRight',
@@ -36,12 +46,9 @@ function handleSubmit(event) {
       console.error(error);
     })
     .finally(() => {
-      toggleLoader(false);
+      // Оскільки це фінальний етап, ми все одно ховаємо лоадер, навіть якщо все пройшло успішно
+      refs.loader.classList.add('is-hidden');
     });
 
-  refs.form.reset();
-}
-
-function toggleLoader(isVisible) {
-  refs.loader.classList.toggle('is-hidden', !isVisible);
+  refs.form.reset();  // Очищаємо форму після пошуку
 }
