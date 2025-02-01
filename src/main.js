@@ -1,23 +1,25 @@
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 import { fetchImages } from './js/pixabay-api.js';
+import { handleSuccess } from './js/render-function.js';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
 export const refs = {
   form: document.querySelector('.form'),
   gallery: document.querySelector('.gallery'),
-  searchButton: document.querySelector('.button'),  // Кнопка для пошуку
+  loaderContainer: document.querySelector('.loader-container'),
 };
 
-refs.searchButton.addEventListener('click', handleSearch);  // Слухаємо натискання на кнопку
+refs.form.addEventListener('submit', handleSubmit);
 
-function handleSearch(event) {
-  event.preventDefault();  // Запобігаємо стандартній поведінці кнопки
+function handleSubmit(event) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const inputValue = form.elements.state.value.trim();
 
-  const inputValue = refs.form.elements.state.value.trim();
+  refs.gallery.innerHTML = '';
 
-  refs.gallery.innerHTML = '';  // Очищаємо галерею перед пошуком
-
-  // Перевірка, чи введено значення
   if (!inputValue) {
     iziToast.error({
       message: 'Please enter your request',
@@ -26,20 +28,38 @@ function handleSearch(event) {
     return;
   }
 
-  // Виконуємо запит на пошук
+  refs.loaderContainer.classList.remove('is-hidden'); // Показуємо лоадер
+
   fetchImages(inputValue)
     .then(data => {
-      // Якщо запит успішний, можна додати елементи в галерею
-      // Пропускаємо це для прикладу
+      if (data.hits.length === 0) {
+        iziToast.error({
+          message: 'No images found. Try another search!',
+          position: 'topRight',
+        });
+        return;
+      }
+
+      const markup = handleSuccess(data.hits);
+      refs.gallery.insertAdjacentHTML('beforeend', markup);
+
+      const lightbox = new SimpleLightbox('.gallery a', {
+        captionDelay: 300,
+        captionsData: 'alt',
+      });
+
+      lightbox.refresh();
     })
     .catch(error => {
-      // Якщо виникла помилка, виводимо повідомлення
       iziToast.error({
         message: 'Error fetching images. Please try again later.',
         position: 'topRight',
       });
       console.error(error);
+    })
+    .finally(() => {
+      refs.loaderContainer.classList.add('is-hidden'); // Ховаємо лоадер після завершення запиту
     });
 
-  refs.form.reset();  // Очищаємо форму після пошуку
+  refs.form.reset();
 }

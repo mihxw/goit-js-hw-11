@@ -18,10 +18,15 @@
           placeholder="Search images..."
         />
       </label>
-      <button type="button" class="button">Search</button>
+      <button type="submit" class="button">Search</button>
     </form>
     <ul class="gallery"></ul>
-    <button id="load-more" style="display: none;">Load more</button>
+    <!-- Індикатор завантаження -->
+    <!-- Індикатор завантаження -->
+<div class="loader-container is-hidden">
+  <p class="loading-text">Loading images, please wait...</p>
+  <div class="loader"></div>
+</div>
 
     <script type="module" src="./main.js"></script>
   </body>
