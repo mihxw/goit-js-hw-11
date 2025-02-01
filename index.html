@@ -9,7 +9,7 @@
     <script type="module" crossorigin src="/goit-js-hw-11/index.js"></script>
     <link rel="modulepreload" crossorigin href="/goit-js-hw-11/assets/vendor-BDaiwwc1.js">
     <link rel="stylesheet" crossorigin href="/goit-js-hw-11/assets/vendor-DumFYO8Z.css">
-    <link rel="stylesheet" crossorigin href="/goit-js-hw-11/assets/index-DMWDOuZB.css">
+    <link rel="stylesheet" crossorigin href="/goit-js-hw-11/assets/index-C6NX8NTq.css">
   </head>
   <body>
     <form class="form">
@@ -21,10 +21,15 @@
           placeholder="Search images..."
         />
       </label>
-      <button type="button" class="button">Search</button>
+      <button type="submit" class="button">Search</button>
     </form>
     <ul class="gallery"></ul>
-    <button id="load-more" style="display: none;">Load more</button>
+    <!-- Індикатор завантаження -->
+    <!-- Індикатор завантаження -->
+<div class="loader-container is-hidden">
+  <p class="loading-text">Loading images, please wait...</p>
+  <div class="loader"></div>
+</div>
 
   </body>
 </html>
